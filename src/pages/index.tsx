@@ -8,7 +8,7 @@ import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse';
 import { FiCalendar, FiUser } from 'react-icons/fi';
 
 import { getPrismicClient } from '../services/prismic';
-import { homePostFormatter } from '../utils/formaters';
+import { dateFormatter } from '../utils/formaters';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
@@ -43,9 +43,15 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       const response = await fetch(nextPage);
       const postsResponse = (await response.json()) as ApiSearchResponse;
 
-      const newPosts = postsResponse.results.map(post =>
-        homePostFormatter(post)
-      );
+      const newPosts = postsResponse.results.map(post => ({
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      }));
 
       setPosts(prevState => [...prevState, ...newPosts]);
       setNextPage(postsResponse.next_page);
@@ -77,7 +83,9 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
                     <div>
                       <p>
                         <FiCalendar size={20} />
-                        <time>{post.first_publication_date}</time>
+                        <time>
+                          {dateFormatter(post.first_publication_date)}
+                        </time>
                       </p>
                       <p>
                         <FiUser size={20} />
@@ -115,7 +123,15 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   );
 
-  const posts = postsResponse.results.map(post => homePostFormatter(post));
+  const posts = postsResponse.results.map(post => ({
+    uid: post.uid,
+    first_publication_date: post.first_publication_date,
+    data: {
+      title: post.data.title,
+      subtitle: post.data.subtitle,
+      author: post.data.author,
+    },
+  }));
 
   const postsPagination = {
     next_page: postsResponse.next_page,
