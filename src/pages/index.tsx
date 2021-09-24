@@ -10,6 +10,7 @@ import { FiCalendar, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
 import { homePostFormatter } from '../utils/formaters';
 
+import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -59,7 +60,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>spacetraveling | Home</title>
       </Head>
 
-      <div className={styles.homeContainer}>
+      <div className={`${commonStyles.container} ${styles.homeContainer}`}>
         <header>
           <Image src="/logo.svg" alt="logo" width={239} height={26} />
         </header>
@@ -68,7 +69,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
           <ul>
             {posts.map(post => (
               <li key={post.uid} className={styles.postItem}>
-                <Link href={`/posts/${post.uid}`}>
+                <Link href={`/post/${post.uid}`}>
                   <a>
                     <h2>{post.data.title}</h2>
                     <p>{post.data.subtitle}</p>
